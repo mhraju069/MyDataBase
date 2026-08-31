@@ -1,5 +1,41 @@
-from mydb.database import DataBase
+from mydb.page import Page
+from mydb.storage import Storage
 
-# Create a database
-db = DataBase("./data")
-print("Database created successfully at ", db.path)
+
+storage = Storage("./data/mydb.db")
+
+
+# Create a page
+page = Page()
+
+page.write(
+    b"Hello MyDB!"
+)
+
+
+# Save page to disk
+storage.write_page(
+    0,
+    page
+)
+
+
+# Read page from disk
+loaded_page = storage.read_page(0)
+
+
+print(
+    loaded_page.read(
+        0,
+        11
+    )
+)
+
+
+print(
+    "Pages:",
+    storage.page_count()
+)
+
+
+storage.close()
