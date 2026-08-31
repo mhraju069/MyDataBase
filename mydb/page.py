@@ -2,14 +2,33 @@ PAGE_SIZE = 4096
 
 
 class Page:
-    def __init__(self):
-        self.data = bytearray(PAGE_SIZE)
+    def __init__(self, data=None):
+        if data is None:
+            self.data = bytearray(PAGE_SIZE)
+        else:
+            if len(data) != PAGE_SIZE:
+                raise ValueError("Invalid page size")
 
-    def write(self, data: bytes):
-        if len(data) > PAGE_SIZE:
-            raise ValueError("Data is too large for page")
+            self.data = bytearray(data)
 
-        self.data[:len(data)] = data
+    def write(self, data: bytes, offset: int = 0):
+        end = offset + len(data)
 
-    def read(self) -> bytes:
+        if end > PAGE_SIZE:
+            raise ValueError("Data exceeds page size")
+
+        self.data[offset:end] = data
+
+    def read(self, offset: int = 0, size: int = None) -> bytes:
+        if size is None:
+            size = PAGE_SIZE - offset
+
+        end = offset + size
+
+        if end > PAGE_SIZE:
+            raise ValueError("Read exceeds page size")
+
+        return bytes(self.data[offset:end])
+
+    def raw(self) -> bytes:
         return bytes(self.data)
