@@ -1,9 +1,18 @@
 from pathlib import Path
 
-class DataBase:
-    def __init__(self,path:str):
+from .storage import Storage
+
+
+class Database:
+    def __init__(self, path: str):
         self.path = Path(path)
 
-        if not self.path.exists():
-            self.path.mkdir(parents=True,exist_ok=True)
-    
+        self.path.parent.mkdir(
+            parents=True,
+            exist_ok=True
+        )
+
+        self.storage = Storage(path)
+
+    def close(self):
+        self.storage.close()
