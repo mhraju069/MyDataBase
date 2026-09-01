@@ -1,7 +1,24 @@
 from mydb.page import Page
+from mydb.row import Row
+
 
 page = Page()
 
-page.write(b"Hello MyDB")
 
-print(page.read()[:10])
+row = Row(
+    row_id=1,
+    name="Hasan",
+    age=24
+)
+
+
+page.insert_row(
+    row,
+    offset=0
+)
+
+
+loaded_row = page.read_row(0)
+
+
+print(loaded_row)

@@ -1,3 +1,4 @@
+from .row import Row
 PAGE_SIZE = 4096
 
 
@@ -32,3 +33,31 @@ class Page:
 
     def raw(self) -> bytes:
         return bytes(self.data)
+
+    
+    def insert_row(self, row: Row, offset: int):
+
+        row_data = row.serialize()
+
+        row_size = len(row_data)
+
+        record = (row_size.to_bytes(4, 'little') + row_data)
+
+        self.write(record, offset)
+
+        return len(record)
+
+
+    def read_row(self, offset: int):
+
+        row_size = int.from_bytes(
+            self.read(offset, 4),
+            'little'
+        )
+        
+        row_data = self.read(offset + 4, row_size)
+
+        return Row.deserialize(row_data)
+
+
+        
